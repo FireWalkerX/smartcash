@@ -570,25 +570,25 @@ CSmartnode* CSmartnodeMan::GetNextSmartnodeInQueueForPayment(int nBlockHeight, b
         }
         // //check protocol version
         if(mn.nProtocolVersion < mnpayments.GetMinSmartnodePaymentsProto()) {
-            LogPrintf("Invalid nProtocolVersion!\n");
-            LogPrintf("mn.nProtocolVersion=%s!\n", mn.nProtocolVersion);
-            LogPrintf("mnpayments.GetMinSmartnodePaymentsProto=%s!\n", mnpayments.GetMinSmartnodePaymentsProto());
+            //LogPrintf("Invalid nProtocolVersion!\n");
+            //LogPrintf("mn.nProtocolVersion=%s!\n", mn.nProtocolVersion);
+            //LogPrintf("mnpayments.GetMinSmartnodePaymentsProto=%s!\n", mnpayments.GetMinSmartnodePaymentsProto());
             continue;
         }
         //it's in the list (up to 8 entries ahead of current block to allow propagation) -- so let's skip it
         if(mnpayments.IsScheduled(mn, nBlockHeight)){
-            LogPrintf("mnpayments.IsScheduled!\n");
+            //LogPrintf("mnpayments.IsScheduled!\n");
             continue;
         }
         //it's too new, wait for a cycle
         if(fFilterSigTime && mn.sigTime + (nMnCount * 2.6 * 60) > GetAdjustedTime()){
-            LogPrintf("it's too new, wait for a cycle!\n");
+            //LogPrintf("it's too new, wait for a cycle!\n");
             continue;
         }
         //make sure it has at least as many confirmations as there are smartnodes
         if(mn.GetCollateralAge() < nMnCount) {
-            LogPrintf("mn.GetCollateralAge()=%s!\n", mn.GetCollateralAge());
-            LogPrintf("nMnCount=%s!\n", nMnCount);
+            //LogPrintf("mn.GetCollateralAge()=%s!\n", mn.GetCollateralAge());
+            //LogPrintf("nMnCount=%s!\n", nMnCount);
             continue;
         }
 
@@ -598,7 +598,7 @@ CSmartnode* CSmartnodeMan::GetNextSmartnodeInQueueForPayment(int nBlockHeight, b
 
     //when the network is in the process of upgrading, don't penalize nodes that recently restarted
     if(fFilterSigTime && nCount < nMnCount / 3) {
-        LogPrintf("Need Return, nCount=%s, nMnCount/3=%s\n", nCount, nMnCount/3);
+        //LogPrintf("Need Return, nCount=%s, nMnCount/3=%s\n", nCount, nMnCount/3);
         return GetNextSmartnodeInQueueForPayment(nBlockHeight, false, nCount);
     }
 
@@ -786,7 +786,7 @@ void CSmartnodeMan::ProcessSmartnodeConnections()
     BOOST_FOREACH(CNode* pnode, vNodes) {
         if(pnode->fSmartnode) {
             if(darkSendPool.pSubmittedToSmartnode != NULL && pnode->addr == darkSendPool.pSubmittedToSmartnode->addr) continue;
-            LogPrintf("Closing Smartnode connection: peer=%d, addr=%s\n", pnode->id, pnode->addr.ToString());
+            //LogPrintf("Closing Smartnode connection: peer=%d, addr=%s\n", pnode->id, pnode->addr.ToString());
             pnode->fDisconnect = true;
         }
     }

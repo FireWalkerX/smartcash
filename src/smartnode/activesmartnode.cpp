@@ -252,23 +252,23 @@ void CActiveSmartnode::ManageStateRemote() {
         if (infoMn.nProtocolVersion != PROTOCOL_VERSION) {
             nState = ACTIVE_SMARTNODE_NOT_CAPABLE;
             strNotCapableReason = "Invalid protocol version";
-            LogPrintf("CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
+            LogPrint("smartnode","CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
             return;
         }
         if (service != infoMn.addr) {
             nState = ACTIVE_SMARTNODE_NOT_CAPABLE;
             strNotCapableReason = "Broadcasted IP doesn't match our external address. Make sure you issued a new broadcast if IP of this smartnode changed recently.";
-            LogPrintf("CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
+            LogPrint("smartnode","CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
             return;
         }
         if (!CSmartnode::IsValidStateForAutoStart(infoMn.nActiveState)) {
             nState = ACTIVE_SMARTNODE_NOT_CAPABLE;
             strNotCapableReason = strprintf("Smartnode in %s state", CSmartnode::StateToString(infoMn.nActiveState));
-            LogPrintf("CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
+            LogPrint("smartnode","CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
             return;
         }
         if (nState != ACTIVE_SMARTNODE_STARTED) {
-            LogPrintf("CActiveSmartnode::ManageStateRemote -- STARTED!\n");
+            LogPrint("smartnode","CActiveSmartnode::ManageStateRemote -- STARTED!\n");
             vin = infoMn.vin;
             service = infoMn.addr;
             fPingerEnabled = true;
@@ -277,7 +277,7 @@ void CActiveSmartnode::ManageStateRemote() {
     } else {
         nState = ACTIVE_SMARTNODE_NOT_CAPABLE;
         strNotCapableReason = "Smartnode not in smartnode list";
-        LogPrintf("CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
+        LogPrint("smartnode","CActiveSmartnode::ManageStateRemote -- %s: %s\n", GetStateString(), strNotCapableReason);
     }
 }
 
@@ -297,7 +297,7 @@ void CActiveSmartnode::ManageStateLocal() {
         if (nInputAge < Params().GetConsensus().nSmartnodeMinimumConfirmations) {
             nState = ACTIVE_SMARTNODE_INPUT_TOO_NEW;
             strNotCapableReason = strprintf(_("%s - %d confirmations"), GetStatus(), nInputAge);
-            LogPrintf("CActiveSmartnode::ManageStateLocal -- %s: %s\n", GetStateString(), strNotCapableReason);
+            LogPrint("smartnode","CActiveSmartnode::ManageStateLocal -- %s: %s\n", GetStateString(), strNotCapableReason);
             return;
         }
 
@@ -312,7 +312,7 @@ void CActiveSmartnode::ManageStateLocal() {
                                      pubKeySmartnode, strError, mnb)) {
             nState = ACTIVE_SMARTNODE_NOT_CAPABLE;
             strNotCapableReason = "Error creating mastenode broadcast: " + strError;
-            LogPrintf("CActiveSmartnode::ManageStateLocal -- %s: %s\n", GetStateString(), strNotCapableReason);
+            LogPrint("smartnode","CActiveSmartnode::ManageStateLocal -- %s: %s\n", GetStateString(), strNotCapableReason);
             return;
         }
 
@@ -320,12 +320,12 @@ void CActiveSmartnode::ManageStateLocal() {
         nState = ACTIVE_SMARTNODE_STARTED;
 
         //update to smartnode list
-        LogPrintf("CActiveSmartnode::ManageStateLocal -- Update Smartnode List\n");
+        LogPrint("smartnode","CActiveSmartnode::ManageStateLocal -- Update Smartnode List\n");
         mnodeman.UpdateSmartnodeList(mnb);
         mnodeman.NotifySmartnodeUpdates();
 
         //send to all peers
-        LogPrintf("CActiveSmartnode::ManageStateLocal -- Relay broadcast, vin=%s\n", vin.ToString());
+        LogPrint("smartnode","CActiveSmartnode::ManageStateLocal -- Relay broadcast, vin=%s\n", vin.ToString());
         mnb.RelaySmartNode();
     }
 }

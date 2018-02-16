@@ -391,14 +391,14 @@ void CSmartnodePayments::ProcessMessage(CNode *pfrom, std::string &strCommand, C
         }
 
         if (!CanVote(vote.vinSmartnode.prevout, vote.nBlockHeight)) {
-            LogPrintf("SMARTNODEPAYMENTVOTE -- smartnode already voted, smartnode=%s\n", vote.vinSmartnode.prevout.ToStringShort());
+            LogPrint("mnpayments","SMARTNODEPAYMENTVOTE -- smartnode already voted, smartnode=%s\n", vote.vinSmartnode.prevout.ToStringShort());
             return;
         }
 
         smartnode_info_t mnInfo = mnodeman.GetSmartnodeInfo(vote.vinSmartnode);
         if (!mnInfo.fInfoValid) {
             // mn was not found, so we can't check vote, some info is probably missing
-            LogPrintf("SMARTNODEPAYMENTVOTE -- smartnode is missing %s\n", vote.vinSmartnode.prevout.ToStringShort());
+            LogPrint("mnpayments","SMARTNODEPAYMENTVOTE -- smartnode is missing %s\n", vote.vinSmartnode.prevout.ToStringShort());
             mnodeman.AskForMN(pfrom, vote.vinSmartnode);
             return;
         }
@@ -406,7 +406,7 @@ void CSmartnodePayments::ProcessMessage(CNode *pfrom, std::string &strCommand, C
         int nDos = 0;
         if (!vote.CheckSignature(mnInfo.pubKeySmartnode, pCurrentBlockIndex->nHeight, nDos)) {
             if (nDos) {
-                LogPrintf("SMARTNODEPAYMENTVOTE -- ERROR: invalid signature\n");
+                LogPrint("mnpayments","SMARTNODEPAYMENTVOTE -- ERROR: invalid signature\n");
                 Misbehaving(pfrom->GetId(), nDos);
             } else {
                 // only warn about anything non-critical (i.e. nDos == 0) in debug mode
