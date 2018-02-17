@@ -727,12 +727,12 @@ bool CSmartnodePaymentVote::IsValid(CNode *pnode, int nValidationHeight, std::st
 
 bool CSmartnodePayments::ProcessBlock(int nBlockHeight) {
 
-    LogPrintf("CSmartnodePayments::ProcessBlock nBlockHeight=%s\n", nBlockHeight);
+    //LogPrintf("CSmartnodePayments::ProcessBlock nBlockHeight=%s\n", nBlockHeight);
 
     // DETERMINE IF WE SHOULD BE VOTING FOR THE NEXT PAYEE
 
     if (fLiteMode || !fSmartNode) {
-        LogPrintf("LogPrintf fSmartnode failed here 1\n");
+        //LogPrintf("LogPrintf fSmartnode failed here 1\n");
         return false;
     }
 
@@ -761,7 +761,7 @@ bool CSmartnodePayments::ProcessBlock(int nBlockHeight) {
 
     // LOCATE THE NEXT SMARTNODE WHICH SHOULD BE PAID
 
-    LogPrintf("CSmartnodePayments::ProcessBlock -- Start: nBlockHeight=%d, smartnode=%s\n", nBlockHeight, activeSmartnode.vin.prevout.ToStringShort());
+    //LogPrintf("CSmartnodePayments::ProcessBlock -- Start: nBlockHeight=%d, smartnode=%s\n", nBlockHeight, activeSmartnode.vin.prevout.ToStringShort());
 
     // pay to the oldest MN that still had no payment but its input is old enough and it was active long enough
     int nCount = 0;
@@ -783,7 +783,7 @@ bool CSmartnodePayments::ProcessBlock(int nBlockHeight) {
     ExtractDestination(payee, address1);
     CBitcoinAddress address2(address1);
 
-    LogPrintf("CSmartnodePayments::ProcessBlock -- vote: payee=%s, nBlockHeight=%d\n", address2.ToString(), nBlockHeight);
+    //LogPrintf("CSmartnodePayments::ProcessBlock -- vote: payee=%s, nBlockHeight=%d\n", address2.ToString(), nBlockHeight);
 
     // SIGN MESSAGE TO NETWORK WITH OUR SMARTNODE KEYS
 

@@ -259,7 +259,7 @@ void CSmartnodeSync::ProcessTick() {
     //the actual count of smartnodes we have currently
     int nMnCount = mnodeman.CountSmartnodes();
 
-    if (fDebug) LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nMnCount %d\n", nTick, nMnCount);
+    // if (fDebug) LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nMnCount %d\n", nTick, nMnCount);
 
     // RESET SYNCING INCASE OF FAILURE
     {
@@ -268,7 +268,7 @@ void CSmartnodeSync::ProcessTick() {
                 Resync if we lost all smartnodes from sleep/wake or failed to sync originally
             */
             if (nMnCount == 0) {
-                LogPrintf("CSmartnodeSync::ProcessTick -- WARNING: not enough data, restarting sync\n");
+                //LogPrintf("CSmartnodeSync::ProcessTick -- WARNING: not enough data, restarting sync\n");
                 Reset();
             } else {
                 std::vector < CNode * > vNodesCopy = CopyNodeVector();
@@ -289,7 +289,7 @@ void CSmartnodeSync::ProcessTick() {
 
     // INITIAL SYNC SETUP / LOG REPORTING
     double nSyncProgress = double(nRequestedSmartnodeAttempt + (nRequestedSmartnodeAssets - 1) * 8) / (8 * 4);
-    LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d nRequestedSmartnodeAttempt %d nSyncProgress %f\n", nTick, nRequestedSmartnodeAssets, nRequestedSmartnodeAttempt, nSyncProgress);
+    //LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d nRequestedSmartnodeAttempt %d nSyncProgress %f\n", nTick, nRequestedSmartnodeAssets, nRequestedSmartnodeAttempt, nSyncProgress);
     uiInterface.NotifyAdditionalDataSyncProgressChanged(nSyncProgress);
 
 //    LogPrintf("sporks synced but blockchain is not, wait until we're almost at a recent block to continue\n");
@@ -337,7 +337,7 @@ void CSmartnodeSync::ProcessTick() {
                 // We already fully synced from this node recently,
                 // disconnect to free this connection slot for another peer.
                 pnode->fDisconnect = true;
-                LogPrintf("CSmartnodeSync::ProcessTick -- disconnecting from recently synced peer %d\n", pnode->id);
+                //LogPrintf("CSmartnodeSync::ProcessTick -- disconnecting from recently synced peer %d\n", pnode->id);
                 continue;
             }
 
@@ -348,7 +348,7 @@ void CSmartnodeSync::ProcessTick() {
                 netfulfilledman.AddFulfilledRequest(pnode->addr, "spork-sync");
                 // get current network sporks
                 pnode->PushMessage(NetMsgType::GETSPORKS);
-                LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- requesting sporks from peer %d\n", nTick, nRequestedSmartnodeAssets, pnode->id);
+                //LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- requesting sporks from peer %d\n", nTick, nRequestedSmartnodeAssets, pnode->id);
                 continue; // always get sporks first, switch to the next node without waiting for the next tick
             }
 
@@ -357,9 +357,9 @@ void CSmartnodeSync::ProcessTick() {
             if (nRequestedSmartnodeAssets == SMARTNODE_SYNC_LIST) {
                 // check for timeout first
                 if (nTimeLastSmartnodeList < GetTime() - SMARTNODE_SYNC_TIMEOUT_SECONDS) {
-                    LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- timeout\n", nTick, nRequestedSmartnodeAssets);
+                    //LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- timeout\n", nTick, nRequestedSmartnodeAssets);
                     if (nRequestedSmartnodeAttempt == 0) {
-                        LogPrintf("CSmartnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
+                        //LogPrintf("CSmartnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
                         // there is no way we can continue without smartnode list, fail here and try later
                         Fail();
                         ReleaseNodeVector(vNodesCopy);
@@ -391,9 +391,9 @@ void CSmartnodeSync::ProcessTick() {
                 // This might take a lot longer than SMARTNODE_SYNC_TIMEOUT_SECONDS minutes due to new blocks,
                 // but that should be OK and it should timeout eventually.
                 if (nTimeLastPaymentVote < GetTime() - SMARTNODE_SYNC_TIMEOUT_SECONDS) {
-                    LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- timeout\n", nTick, nRequestedSmartnodeAssets);
+                    //LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- timeout\n", nTick, nRequestedSmartnodeAssets);
                     if (nRequestedSmartnodeAttempt == 0) {
-                        LogPrintf("CSmartnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
+                        //LogPrintf("CSmartnodeSync::ProcessTick -- ERROR: failed to sync %s\n", GetAssetName());
                         // probably not a good idea to proceed without winner list
                         Fail();
                         ReleaseNodeVector(vNodesCopy);
@@ -408,7 +408,7 @@ void CSmartnodeSync::ProcessTick() {
                 // if mnpayments already has enough blocks and votes, switch to the next asset
                 // try to fetch data from at least two peers though
                 if (nRequestedSmartnodeAttempt > 1 && mnpayments.IsEnoughData()) {
-                    LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- found enough data\n", nTick, nRequestedSmartnodeAssets);
+                    //LogPrintf("CSmartnodeSync::ProcessTick -- nTick %d nRequestedSmartnodeAssets %d -- found enough data\n", nTick, nRequestedSmartnodeAssets);
                     SwitchToNextAsset();
                     ReleaseNodeVector(vNodesCopy);
                     return;
